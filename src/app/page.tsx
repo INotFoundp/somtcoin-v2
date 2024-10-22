@@ -93,6 +93,12 @@ export default function Home() {
             }).catch((err) => {
                 setError(true)
             })
+        } else {
+            request("/tap", "GET", null, (res) => {
+                setBalance(res.data)
+                setLoading(false)
+                setError(false)
+            })
         }
     }
 
@@ -211,7 +217,7 @@ export default function Home() {
     ) : (
         (
 
-            <div className="  h-full px-4 flex flex-col items-center   text-white font-medium">
+            <div className="h-full px-4 flex flex-col items-center   text-white font-medium">
                 <div className="fixed inset-0 h-1/2 bg-gradient-overlay z-0"></div>
                 <div className="absolute inset-0 flex items-center justify-center z-0">
                     <div className="radial-gradient-overlay"></div>
@@ -233,13 +239,14 @@ export default function Home() {
                                         <path strokeLinecap="round" strokeLinejoin="round"
                                               d="m8.25 4.5 7.5 7.5-7.5 7.5"/>
                                     </svg>
-
                                 </Link>
 
                             </div>
                             <div className={"text-end"}>
-                                <span className={"font-semibold"}>Claim</span>
-                                <p className={"text-yellow-400 font-semibold"}>Daily Rewards</p>
+                                <Link href={"daily"}>
+                                    <span className={"font-semibold"}>Claim</span>
+                                    <p className={"text-yellow-400 font-semibold"}>Daily Rewards</p>
+                                </Link>
                             </div>
                         </div>
                         <div className={"text-4xl flex animate-scale items-center gap-4 flex-col font-bold w-full "}>

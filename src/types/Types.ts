@@ -14,3 +14,10 @@ interface Tap {
     max_energy: number
     user_balance: number
 }
+
+interface Rewards {
+    name: string
+    activate: boolean,
+    id: string,
+    coin: number
+}

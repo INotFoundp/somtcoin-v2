@@ -1,6 +1,6 @@
 "use client"
 
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import useGetData from "@/hooks/useGetData";
 import Loader from "@/components/themes/Loader";
 import {Sheet} from "react-modal-sheet";
@@ -8,24 +8,24 @@ import request from "@/utils/request";
 import {toast} from "react-toastify";
 
 export default function SpinPage() {
+    const [list, setList] = useState<({ name: string, id: string })[]>([]);
 
     const {data, loading} = useGetData("/spin/concept/structure")
     const [isOpen, setOpen] = useState(false);
 
+    const ref = useRef<HTMLCanvasElement | null>(null)
 
-    const [list, setList] = useState<({ name: string, id: string })[]>([]);
     const [radius] = useState<number>(75);
     const [rotate, setRotate] = useState<number>(0);
-    const [easeOut, setEaseOut] = useState<number>(0);
     const [angle, setAngle] = useState<number>(0);
     const [top, setTop] = useState<number | null>(null);
     const [offset, setOffset] = useState<number | null>(null);
-    const [net, setNet] = useState<number | null>(null);
     const [result, setResult] = useState<number | null>(null);
-    const [spinning, setSpinning] = useState<boolean>(false);
 
     useEffect(() => {
-        renderWheel();
+        if (!loading && data.length) {
+            renderWheel();
+        }
     }, [data, loading]);
 
     useEffect(() => {
@@ -33,6 +33,10 @@ export default function SpinPage() {
     }, [loading, data]);
 
     const renderWheel = () => {
+
+        if (loading || !list?.length) return
+
+
         const numOptions = list.length;
         const arcSize = (2 * Math.PI) / numOptions;
         setAngle(arcSize);
@@ -78,7 +82,13 @@ export default function SpinPage() {
         arc: number,
         color: string
     ) => {
-        const canvas = document.getElementById("wheel") as HTMLCanvasElement;
+
+        if (loading) return;
+
+        const canvas = ref.current
+
+        if (!canvas) return;
+
         const ctx = canvas.getContext("2d");
 
         if (!ctx) return
@@ -127,8 +137,7 @@ export default function SpinPage() {
 
         audio.play()
         setRotate(randomSpin);
-        setEaseOut(2);
-        setSpinning(true);
+
 
         setTimeout(() => {
             getResult(randomSpin);
@@ -145,48 +154,51 @@ export default function SpinPage() {
         }
         const finalResult = count >= 0 ? count : list.length + count;
 
-        console.log(finalResult)
-
-        setNet(netRotation);
         setResult(finalResult);
         setOpen(true)
     };
 
     const reset = () => {
         setRotate(0);
-        setEaseOut(0);
+
         setResult(null);
-        setSpinning(false);
+
     };
 
     if (loading) return <Loader/>
 
 
     return (
-        <div className="w-full  flex justify-center gap-32 flex-col items-center overflow-hidden h-full">
+        <div key={list.length}
+             className="w-full  flex justify-center gap-32 flex-col items-center overflow-hidden h-full">
             <div className={"z-10 "}>
                 <h4 className={"text-3xl font-bold text-center"}>Spin And Try your Chance !</h4>
             </div>
-            <div className={"relative w-[330px] flex  justify-center left-0 h-[330px]"}>
-                <span className="w-full text-center top-0  text-4xl z-10 absolute">&#9660;</span>
-                <canvas
-                    className="w-full"
-                    id="wheel"
-                    width="500"
-                    height="500"
-                    style={{
-                        fontSize: 20,
-                        WebkitTransform: `rotate(${rotate}deg)`,
-                        WebkitTransition: `-webkit-transform ${3.7}s ease-in-out`
-                    }}
-                />
+            {list?.length && (
+                <div key={list.length} className={"relative w-[330px] flex  justify-center left-0 h-[330px]"}>
+                    {}
+                    <span className="w-full text-center top-0  text-4xl z-10 absolute">&#9660;</span>
+                    <canvas
+                        className="w-full"
+                        id="wheel"
+                        width="500"
+                        height="500"
+                        ref={ref}
+                        style={{
+                            fontSize: 20,
+                            WebkitTransform: `rotate(${rotate}deg)`,
+                            WebkitTransition: `-webkit-transform ${3.7}s ease-in-out`
+                        }}
+                    />
 
-                <button type="button" id="spin"
-                        className="border-zinc-900/90 text-2xl  font-bold border-4 w-24 h-24 shadow-xl rounded-full bg-white text-black/80 absolute top-[35%] right-[36%]"
-                        onClick={spin}>
-                    SPIN
-                </button>
-            </div>
+                    <button type="button" id="spin"
+                            className="border-zinc-900/90 text-2xl  font-bold border-4 w-24 h-24 shadow-xl rounded-full bg-white text-black/80 absolute top-[35%] right-[36%]"
+                            onClick={spin}>
+                        SPIN
+                    </button>
+                </div>
+            )}
+
 
             {isOpen && <div onClick={() => {
                 setOpen(false)

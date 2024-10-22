@@ -8,6 +8,7 @@ import React, {useState} from "react";
 import Loader from "@/components/themes/Loader";
 import {useRouter} from "next/navigation";
 import Coin from "@/components/themes/Coin";
+import {toast} from "react-toastify";
 
 export default function Boost() {
     const router = useRouter()
@@ -301,7 +302,10 @@ export default function Boost() {
                                             if (mainBoostSheet.price < userBalance && mainBoostSheet.hasOwnProperty("price")) {
 
                                                 if (mainBoostSheet.objName === "bot" && boostData?.bot?.status) {
-                                                    alert("The bot is active")
+                                                    toast("The bot is active", {
+                                                        type: "error",
+                                                        theme: "dark"
+                                                    })
                                                     return;
                                                 }
 
@@ -312,7 +316,10 @@ export default function Boost() {
 
 
                                             } else {
-                                                alert("Lack of coins")
+                                                toast("Lack of coins", {
+                                                    type: "error",
+                                                    theme: "dark"
+                                                })
                                             }
 
                                         }

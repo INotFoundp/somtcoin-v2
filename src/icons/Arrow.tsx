@@ -1,7 +1,4 @@
-import { IconProps } from "../utils/types";
-
-
-const Arrow: React.FC<IconProps> = ({ size = 24, className = "" }) => {
+const Arrow = ({size = 24, className = ""}) => {
 
     const svgSize = `${size}px`;
 
