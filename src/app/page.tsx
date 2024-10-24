@@ -42,15 +42,18 @@ export default function Home() {
     }
 
     function handleClick(e: any) {
-
-        console.log(energy)
-
         if (Number(balance?.clicker) > Number(energy)) return;
         if (navigator.vibrate) navigator?.vibrate(55)
 
         const rect = e.currentTarget.getBoundingClientRect();
-        const x = e.clientX - rect.left;
-        const y = e.clientY - rect.top;
+
+
+        const x = e.touches[0].clientX;
+
+        const y = e.touches[0].clientY - 280;
+
+
+        console.log(x, y)
 
         const copyClicks = [...clicks, new Date().getTime()]
         setClicks(copyClicks)
@@ -109,9 +112,10 @@ export default function Home() {
         if (win.tapingGuru) {
             setTapingGuru(true)
             setTimeout(() => {
+                sendCoins(win.clicks)
                 setTapingGuru(false)
                 win.tapingGuru = false
-            }, 30_000)
+            }, 29_000)
         }
     }, [])
     useEffect(() => {
@@ -269,7 +273,8 @@ export default function Home() {
                     </div>
                     <div className="flex-grow flex relative  justify-center">
                         <div className="relative  mt-4 h-fit">
-                            <Image onTouchStart={handleClick} className={"active:scale-[0.99] animate-scale"} src={coin}
+                            <Image onTouchStartCapture={handleClick} className={"active:scale-[0.99] animate-scale"}
+                                   src={coin}
                                    width={280} height={280}
                                    draggable={false} alt="somtcoin"/>
                             {vClicks.map((click) => (
@@ -277,13 +282,14 @@ export default function Home() {
                                     key={click.id}
                                     className="absolute text-5xl font-bold opacity-0"
                                     style={{
-                                        top: `${click.y - 42}px`,
-                                        left: `${click.x - 28}px`,
+                                        top: `${click.y - 50}px`,
+                                        left: `${click.x - 70}px`,
                                         animation: `float 1s ease-out`
                                     }}
                                     onAnimationEnd={() => handleAnimationEnd(click.id)}
                                 >
-                                    {balance?.clicker}
+
+                                    {tapingGuru ? Number(balance.clicker) * 3 : balance?.clicker}
                                 </div>
                             ))}
                         </div>

@@ -1,5 +1,6 @@
 import HOST from "@/server/host";
 import win from "@/utils/window";
+import {toast} from "react-toastify";
 
 
 export default function request(
@@ -10,10 +11,10 @@ export default function request(
 
     },
     error = (res: any) => {
-
-        console.log(res)
-
-        alert(res?.error ?? "Error")
+        toast(res?.error ?? "Error", {
+            type: "error",
+            theme: "dark"
+        })
     }) {
 
     const promise = fetch(HOST + path, {

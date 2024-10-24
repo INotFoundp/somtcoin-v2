@@ -6,8 +6,10 @@ import win from "@/utils/window";
 import {redirect} from "next/navigation";
 import Loader from "@/components/themes/Loader";
 
+
 export default function ReferralPage() {
     const {data, loading} = useGetData("/refral/link")
+    const {data: refralList, loadingList} = useGetData<ReferralList[]>("/refral/list")
     const [isCopied, setIsCopied] = useState(false)
 
     useEffect(() => {
@@ -19,7 +21,7 @@ export default function ReferralPage() {
 
     if (!win.firstLoad) return redirect("/")
 
-    if (loading) return <Loader/>
+    if (loading || loadingList) return <Loader/>
 
     return (
 
@@ -67,30 +69,30 @@ export default function ReferralPage() {
             <div className={"w-full"}>
                 <div className='w-full mt-3 rounded-md overflow-auto'>
 
-                    {/*{refralList?.map?.(ref => {*/}
+                    {refralList?.map?.((ref) => {
 
-                    {/*    const {permium, coin, name,} = ref*/}
+                        const {permium, coin, name,} = ref
 
-                    {/*    return (*/}
-                    {/*        <div*/}
-                    {/*            className='bg-gray-400/15 py-3 px-3 mt-2 tablet:w-[20rem] mobile:w-[10rem]  rounded-md'>*/}
-                    {/*            <div*/}
-                    {/*                className='text-white flex justify-between items-center text-left mx-4 text-[20px]'>*/}
-                    {/*        <span>*/}
-                    {/*            {name}*/}
-                    {/*        </span>*/}
-                    {/*                /!*<div>*!/*/}
-                    {/*                /!*    <MdKeyboardArrowRight className='text-white font-bold' size={25}/>*!/*/}
-                    {/*                /!*</div>*!/*/}
+                        return (
+                            <div
+                                className='bg-gray-400/15 py-3 px-3 mt-2 tablet:w-[20rem] mobile:w-[10rem]  rounded-md'>
+                                <div
+                                    className='text-white flex justify-between items-center text-left mx-4 text-[20px]'>
+                            <span>
+                                {name}
+                            </span>
+                                    {/*<div>*/}
+                                    {/*    <MdKeyboardArrowRight className='text-white font-bold' size={25}/>*/}
+                                    {/*</div>*/}
 
-                    {/*            </div>*/}
-                    {/*            <div className='text-white text-left mx-4 text-[20px]'>*/}
-                    {/*                {coin} Coin  | {permium ? "Premium" : "Not Premium"}*/}
-                    {/*            </div>*/}
+                                </div>
+                                <div className='text-white text-left mx-4 text-[20px]'>
+                                    {coin} Coin | {permium ? "Premium" : "Not Premium"}
+                                </div>
 
-                    {/*        </div>*/}
-                    {/*    )*/}
-                    {/*})}*/}
+                            </div>
+                        )
+                    })}
 
 
                 </div>

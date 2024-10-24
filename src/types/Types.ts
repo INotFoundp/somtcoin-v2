@@ -21,3 +21,9 @@ interface Rewards {
     id: string,
     coin: number
 }
+
+interface ReferralList {
+    name : string
+    permium : string
+    coin : number
+}
