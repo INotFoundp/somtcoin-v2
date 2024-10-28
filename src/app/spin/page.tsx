@@ -7,6 +7,7 @@ import {Sheet} from "react-modal-sheet";
 import request from "@/utils/request";
 import {toast} from "react-toastify";
 
+
 export default function SpinPage() {
     const [list, setList] = useState<({ name: string, id: string })[]>([]);
 
@@ -192,9 +193,9 @@ export default function SpinPage() {
                     />
 
                     <button type="button" id="spin"
-                            className="border-zinc-900/90 text-2xl  font-bold border-4 w-24 h-24 shadow-xl rounded-full bg-white text-black/80 absolute top-[35%] right-[36%]"
+                            className="border-zinc-900/90  text-xl  font-bold border-4 w-24 h-24 shadow-xl rounded-full bg-white text-black/80 absolute top-[35%] right-[36%]"
                             onClick={spin}>
-                        SPIN
+                        {data.active ? "SPIN" : "Disable"}
                     </button>
                 </div>
             )}
@@ -217,6 +218,7 @@ export default function SpinPage() {
                                 onClick={() => {
                                     // @ts-ignore
                                     request(`/spin/concept/structure?dataID=${list[result as keyof typeof list]?.id}`, "POST", {} , (res) => {
+                                        setOpen(false)
                                         toast("Success" , {
                                             type : "success" ,
                                             theme : "Dark"

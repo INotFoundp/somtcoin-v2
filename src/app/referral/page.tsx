@@ -2,8 +2,7 @@
 
 import React, {useEffect, useState} from "react";
 import useGetData from "@/hooks/useGetData";
-import win from "@/utils/window";
-import {redirect} from "next/navigation";
+
 import Loader from "@/components/themes/Loader";
 
 
@@ -19,7 +18,6 @@ export default function ReferralPage() {
     }, [isCopied])
 
 
-    if (!win.firstLoad) return redirect("/")
 
     if (loading || loadingList) return <Loader/>
 

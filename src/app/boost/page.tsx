@@ -9,6 +9,7 @@ import Loader from "@/components/themes/Loader";
 import {useRouter} from "next/navigation";
 import Coin from "@/components/themes/Coin";
 import {toast} from "react-toastify";
+import Retry from "@/components/Retry/Retry";
 
 export default function Boost() {
     const router = useRouter()
@@ -25,9 +26,9 @@ export default function Boost() {
     if (loading) return <Loader/>
 
 
-    // if (!success) return (
-    //     <Reload refetch={refetch}/>
-    // )
+    if (!success) return (
+        <Retry refetch={refetch}/>
+    )
 
 
     const {multitap, energylimit, recharging, tapingguru, fulltank} = boostData ?? {}

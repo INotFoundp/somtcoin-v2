@@ -4,7 +4,6 @@ import Coin from "@/components/themes/Coin";
 import React, {useState} from "react";
 import useGetData from "@/hooks/useGetData";
 import win from "@/utils/window";
-import {redirect} from "next/navigation";
 import {Sheet} from "react-modal-sheet";
 import Image from "next/image";
 import Loader from "@/components/themes/Loader";
@@ -20,7 +19,6 @@ export default function TasksPage() {
     const [requestLoader, setRequestLoader] = useState(false)
 
 
-    if (!win.firstLoad) return redirect("/")
     if (loading) return <Loader/>
 
 
@@ -28,7 +26,7 @@ export default function TasksPage() {
         youtube: {title: "Youtube", verifyTitle: "Subs"},
         channel: {title: "Telegram", verifyTitle: "Subscribe"},
         instagram: {title: "Instagram", verifyTitle: "Follow"},
-        twitter: {title: "Twitter ", verifyTitle: "Follow"},
+        X: {title: "Twitter ", verifyTitle: "Follow"},
 
     }
 
@@ -129,6 +127,16 @@ export default function TasksPage() {
                                                 className={"text-center text-xs text-yellow-400"}>You most Invite {mainTask?.refraluser} To Do This Task !</span>)}
                                         <a
                                             target={"_blank"}
+                                            onClick={(event) => {
+                                                if (mainTask.gotolink) {
+                                                    event.preventDefault()
+                                                    event.stopPropagation()
+
+                                                    request("/task/go_to_link", "POST", {key: mainTask.key}, (res) => {
+                                                        win?.open?.(mainTask.link, '_blank')?.focus?.();
+                                                    })
+                                                }
+                                            }}
                                             href={mainTask?.link}
                                             className="brightness-150 w-full active:scale-[0.99]  text-center dark:brightness-100 group     p-1 rounded-xl bg-gradient-to-br from-yellow-800 via-yellow-600 to-yellow-800  "
                                         >
@@ -148,12 +156,14 @@ export default function TasksPage() {
                                                 request("/task/check", "POST", {key: mainTask.key}, (res) => {
                                                     refetch()
                                                     setRequestLoader(false)
+                                                    setOpen(false)
                                                 }, (res) => {
                                                     toast(res?.error ?? "Error", {
                                                         type: "error",
                                                         theme: "dark"
                                                     })
                                                     setRequestLoader(false)
+                                                    setOpen(false)
 
                                                 })
                                             }}
