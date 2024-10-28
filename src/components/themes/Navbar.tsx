@@ -1,11 +1,11 @@
 "use client"
 
-import {usePathname, useRouter} from "next/navigation";
+import Link from "next/link";
+import {usePathname} from "next/navigation";
 
 export default function Navbar() {
 
     const path = usePathname()
-    const router = useRouter()
 
     const list = {
         ref: {
@@ -41,14 +41,11 @@ export default function Navbar() {
                     const isActive = path.split("/")[1] === href
 
                     return (
-                        <button onClick={() => {
-                            navigator.vibrate(30)
-                            router.push("/" + href)
-                        }} key={key} style={{boxShadow: "0 0 40px #000000a1"}}
+                        <Link key={key} href={href ? href : "/"} style={{boxShadow: "0 0 40px #000000a1"}}
                               className={`w-16  h-16 border flex bg-zinc-900 ${isActive ? "bg-opacity-75" : "bg-opacity-60"} backdrop-blur-lg  border-zinc-500 flex-col justify-evenly items-center rounded-lg`}>
                             <img src={`/images/${img}`} className={"w-[26px]"} alt="ref"/>
                             <span className={"text-amber-50"}>{label}</span>
-                        </button>
+                        </Link>
                     )
                 })}
 
