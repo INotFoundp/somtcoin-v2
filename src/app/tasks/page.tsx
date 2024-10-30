@@ -26,7 +26,7 @@ export default function TasksPage() {
         youtube: {title: "Youtube", verifyTitle: "Subs"},
         channel: {title: "Telegram", verifyTitle: "Subscribe"},
         instagram: {title: "Instagram", verifyTitle: "Follow"},
-        X: {title: "Twitter ", verifyTitle: "Follow"},
+        x: {title: "Twitter ", verifyTitle: "Follow"},
 
     }
 
@@ -77,7 +77,7 @@ export default function TasksPage() {
                                             }}
                                             className={"w-full flex gap-3 z-10 items-center justify-between p-2 px-3 border border-zinc-500 rounded-3xl bg-zinc-900 bg-opacity-25 "}>
                                             <div className={"flex gap-3 items-center "}>
-                                                <img src={`/images/${status}.png`} alt={""}
+                                                <img src={`/images/${status?.toLowerCase?.()}.png`} alt={""}
                                                      width={40} height={40}/>
                                                 <div>
                                                     <h5 className={"text-sm font-semibold"}> {taskStats[status as keyof typeof taskStats]?.verifyTitle} {username}</h5>
@@ -144,7 +144,7 @@ export default function TasksPage() {
                                                 className="px-6 w-full py-2 backdrop-blur-xl  rounded-xl font-bold flex justify-center h-full">
                                                 <div
                                                     className="flex  text-zinc-900 gap-1 ">
-                                                    {taskStats[mainTask?.status as keyof typeof taskStats]?.verifyTitle}
+                                                    {taskStats[mainTask?.status?.toLowerCase?.() as keyof typeof taskStats]?.verifyTitle}
 
                                                 </div>
                                             </div>
