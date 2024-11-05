@@ -18,6 +18,9 @@ export default function useGetData<T = any>(path: string) {
         {data: {}, loading: true, success: false,}
     )
 
+    const token = win?.localStorage?.getItem?.("token") ?? win?.token
+
+
     useEffect(() => {
         refetch()
     }, []);
@@ -36,7 +39,7 @@ export default function useGetData<T = any>(path: string) {
             headers: {
                 "Content-Type": "application/json",
                 // @ts-ignore
-                "authorization": `Bearer ${win.token}`,
+                "authorization": `Bearer ${token}`,
             },
 
 

@@ -4,11 +4,13 @@ import React, {useEffect, useState} from "react";
 import useGetData from "@/hooks/useGetData";
 
 import Loader from "@/components/themes/Loader";
+import {toast} from "react-toastify";
+import Retry from "@/components/Retry/Retry";
 
 
 export default function ReferralPage() {
-    const {data, loading} = useGetData("/refral/link")
-    const {data: refralList, loadingList} = useGetData<ReferralList[]>("/refral/list")
+    const {data, loading, success, refetch} = useGetData("/refral/link")
+    const {data: refralList, loadingList, refetchList} = useGetData<ReferralList[]>("/refral/list")
     const [isCopied, setIsCopied] = useState(false)
 
     useEffect(() => {
@@ -20,6 +22,7 @@ export default function ReferralPage() {
 
 
     if (loading || loadingList) return <Loader/>
+    if (!success) <Retry refetch={[refetch, refetchList]}/>
 
     return (
 

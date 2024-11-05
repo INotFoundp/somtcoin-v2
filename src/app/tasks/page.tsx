@@ -10,16 +10,18 @@ import Loader from "@/components/themes/Loader";
 import request from "@/utils/request";
 import RequestLoader from "@/components/RequestLoading/RequestLoader";
 import {toast} from "react-toastify";
+import Retry from "@/components/Retry/Retry";
 
 
 export default function TasksPage() {
-    const {data, loading, refetch} = useGetData("/task/user")
+    const {data, loading, refetch, success} = useGetData("/task/user")
     const [isOpen, setOpen] = useState(false);
     const [mainTask, setMainTask] = useState<any>({})
     const [requestLoader, setRequestLoader] = useState(false)
 
 
     if (loading) return <Loader/>
+    if (!success) return <Retry refetch={refetch}/>
 
 
     const taskStats = {

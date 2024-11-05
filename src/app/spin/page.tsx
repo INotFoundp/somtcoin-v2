@@ -6,12 +6,13 @@ import Loader from "@/components/themes/Loader";
 import {Sheet} from "react-modal-sheet";
 import request from "@/utils/request";
 import {toast} from "react-toastify";
+import Retry from "@/components/Retry/Retry";
 
 
 export default function SpinPage() {
     const [list, setList] = useState<({ name: string, id: string })[]>([]);
 
-    const {data, loading} = useGetData("/spin/concept/structure")
+    const {data, loading, success, refetch} = useGetData("/spin/concept/structure")
     const [isOpen, setOpen] = useState(false);
 
     const ref = useRef<HTMLCanvasElement | null>(null)
@@ -34,7 +35,6 @@ export default function SpinPage() {
     }, [loading, data]);
 
     const renderWheel = () => {
-
         if (loading || !list?.length) return
 
 
@@ -133,6 +133,18 @@ export default function SpinPage() {
     };
 
     const spin = () => {
+
+        if (!data?.activate) {
+
+            console.log("test")
+
+            toast("Spin is Disabled", {
+                type: "error",
+                theme: "dark"
+            })
+            return
+        }
+
         const randomSpin = Math.floor(Math.random() * 900) + 500;
         const audio = new Audio("/sounds/spin.mp3")
 
@@ -167,6 +179,7 @@ export default function SpinPage() {
     };
 
     if (loading) return <Loader/>
+    if (!success) return <Retry refetch={refetch}/>
 
 
     return (
@@ -193,9 +206,10 @@ export default function SpinPage() {
                     />
 
                     <button type="button" id="spin"
-                            className="border-zinc-900/90  text-xl  font-bold border-4 w-24 h-24 shadow-xl rounded-full bg-white text-black/80 absolute top-[35%] right-[36%]"
+                            disabled={!data.activate}
+                            className="border-zinc-900/90 active:scale-[0.99] active:opacity-80  text-xl  font-bold border-4 w-24 transition h-24 shadow-xl rounded-full bg-white text-black/80 absolute top-[35%] right-[36%]"
                             onClick={spin}>
-                        {data.active ? "SPIN" : "Disable"}
+                        {data.activate ? "SPIN" : "Disable"}
                     </button>
                 </div>
             )}

@@ -7,6 +7,7 @@ import {MdOutlineTouchApp} from "react-icons/md";
 import {FaUserClock, FaUsers} from "react-icons/fa6";
 import {FaRegDotCircle} from "react-icons/fa";
 import Coin from "@/components/themes/Coin";
+import Retry from "@/components/Retry/Retry";
 
 
 export default function StatsBox(props: any) {
@@ -24,7 +25,7 @@ export default function StatsBox(props: any) {
 
     if (loading) return <Loader/>
 
-    // if (!success) return <Reload refetch={refetch}/>
+    if (!success) return <Retry refetch={refetch}/>
 
     const {
         online,

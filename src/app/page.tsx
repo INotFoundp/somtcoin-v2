@@ -9,6 +9,8 @@ import Image from "next/image";
 import getTelegramParams from "@/utils/getTelegramParams";
 import HOST from "@/server/host";
 import Retry from "@/components/Retry/Retry";
+import {Sheet} from "react-modal-sheet";
+import {toast} from "react-toastify";
 
 
 export default function Home() {
@@ -19,7 +21,7 @@ export default function Home() {
     const [balance, setBalance] = useState<Partial<Tap>>({})
     const [showSheet, setShowSheet] = useState(false)
     const [tapingGuru, setTapingGuru] = useState(false)
-    const [botReceived, setBotReceived] = useState({})
+    const [botReceived, setBotReceived] = useState<Partial<{ time: string, filled_volume: number }>>({})
     const energyThread = useRef<any>(false);
     const botReceivingRef = useRef(true)
     const [energy, setEnergy] = useState(0)
@@ -36,7 +38,9 @@ export default function Home() {
             setClicks([])
             win.clicks = []
         }, () => {
-            alert("Please Check Your Connection")
+            toast("Please Check Your Connection", {
+                type: "error", theme: "dark"
+            })
             sendCoins(win.clicks)
         })
     }
@@ -68,7 +72,10 @@ export default function Home() {
 
 
     function authentication() {
-        if (!win.token) {
+
+        const token = win?.localStorage?.getItem?.("token");
+
+        if (!token) {
             const {
                 user,
                 chat_instance,
@@ -87,6 +94,7 @@ export default function Home() {
                     'Content-Type': 'application/json'
                 }
             }).then(res => res.json()).then(res => {
+                win?.localStorage?.setItem?.("token", res.access_token);
                 win.token = res.access_token
                 request("/tap", "GET", null, (res) => {
                     setBalance(res.data)
@@ -155,21 +163,22 @@ export default function Home() {
         }
     }, [])
 
-    // useEffect(() => {
-    //     if (win.botReceivingRef) {
-    //         request("/bot/receiving", "GET", null, ({data}) => {
-    //             setBotReceived(data)
-    //             win.botReceivingRef = false
-    //         }, () => {
-    //             return null
-    //         })
-    //     }
-    // }, []);
+    useEffect(() => {
+        if (win.botReceivingRef) {
+            request("/bot/receiving", "GET", null, ({data}) => {
+                setBotReceived(data)
+                win.botReceivingRef = false
+            }, () => {
+                return null
+            })
+        }
+    }, []);
 
 
-    // useEffect(() => {
-    //     if (botReceived?.time && botReceived?.filled_volume > 10) setShowSheet(true)
-    // }, [botReceived])
+    useEffect(() => {
+        // @ts-ignore
+        if (botReceived?.time && botReceived?.filled_volume > 10) setShowSheet(true)
+    }, [botReceived])
     //
     useEffect(() => {
         if (!balance.clicker) return
@@ -309,6 +318,53 @@ export default function Home() {
                     </div>
                 </div>
 
+                <Sheet  detent={"content-height"} isOpen={showSheet} onClose={() => setShowSheet(false)}>
+                    <Sheet.Container style={{background: "#000000f9", color: "#fff"}}>
+                        <Sheet.Header/>
+                        <Sheet.Content>
+                            <div
+                                className={"flex py-4 w-full  justify-between items-center flex-col gap-6"}>
+
+                                <div className={"flex flex-col gap-2 items-center"}>
+                                    <div className={"flex justify-center"}>
+                                        <Image src={"/images/robot_face.png"} alt={"BOT"} width={150} height={150}/>
+                                    </div>
+
+                                    <div className='text-white text-2xl text-center '>
+                                        Receive Bot Coin !
+                                    </div>
+                                    <div className={"flex pt-6 items-center gap-2"}>
+                                        <Coin width={20} height={20}/>
+                                        <span className={"text-lg"}>{botReceived?.filled_volume}</span>
+                                    </div>
+                                </div>
+                                <div className={"w-full flex-col flex gap-2 px-4"}>
+
+
+                                    <button
+                                        onClick={() => {
+                                            request("/bot/confirm", "POST", {time: botReceived.time}, ({data}) => {
+                                                setShowSheet(false)
+                                                setPoints(data.user_balance)
+                                            })
+                                        }}
+                                        className={`brightness-150 w-full active:scale-[0.99] text-center dark:brightness-100 group     p-1 rounded-xl bg-gradient-to-br from-yellow-800 via-yellow-600 to-yellow-800  `}
+                                    >
+                                        <div
+                                            className="px-6 w-full py-2 backdrop-blur-xl  rounded-xl font-bold flex justify-center h-full">
+                                            <div
+                                                className="flex  text-zinc-900 gap-1 ">
+                                                Claim
+                                            </div>
+                                        </div>
+                                    </button>
+
+                                </div>
+                            </div>
+                        </Sheet.Content>
+                    </Sheet.Container>
+                    <Sheet.Backdrop/>
+                </Sheet>
             </div>
         )
     )

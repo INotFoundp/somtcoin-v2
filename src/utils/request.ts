@@ -17,12 +17,13 @@ export default function request(
         })
     }) {
 
+    const token = win?.localStorage?.getItem?.("token") ?? win?.token
+
     const promise = fetch(HOST + path, {
         method,
         headers: {
             "Content-Type": "application/json",
-            // @ts-ignore
-            "authorization": `Bearer ${win.token}`,
+            "authorization": `Bearer ${token}`,
         },
         ...(!!body && ({body: body instanceof FormData ? body : JSON.stringify(body)})),
     })
