@@ -31,7 +31,7 @@ export default function SpinPage() {
     }, [data, loading]);
 
     useEffect(() => {
-        if (!loading) setList(data)
+        if (!loading) setList(data?.list ?? [])
     }, [loading, data]);
 
     const renderWheel = () => {
@@ -188,7 +188,7 @@ export default function SpinPage() {
             <div className={"z-10 "}>
                 <h4 className={"text-3xl font-bold text-center"}>Spin And Try your Chance !</h4>
             </div>
-            {list?.length && (
+            {list?.length ? (
                 <div key={list.length} className={"relative w-[330px] flex  justify-center left-0 h-[330px]"}>
                     {}
                     <span className="w-full text-center top-0  text-4xl z-10 absolute">&#9660;</span>
@@ -212,7 +212,7 @@ export default function SpinPage() {
                         {data.activate ? "SPIN" : "Disable"}
                     </button>
                 </div>
-            )}
+            ) : <p className={"text-white text-3xl z-20"}>NO ITEM FOR SPIN</p>}
 
 
             {isOpen && <div onClick={() => {

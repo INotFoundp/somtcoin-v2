@@ -46,18 +46,17 @@ export default function Home() {
     }
 
     function handleClick(e: any) {
+
+        if (!Number(energy)) return;
+
         if (Number(balance?.clicker) > Number(energy)) return;
         if (navigator.vibrate) navigator?.vibrate(55)
-
-        const rect = e.currentTarget.getBoundingClientRect();
 
 
         const x = e.touches[0].clientX;
 
         const y = e.touches[0].clientY - 280;
 
-
-        console.log(x, y)
 
         const copyClicks = [...clicks, new Date().getTime()]
         setClicks(copyClicks)
